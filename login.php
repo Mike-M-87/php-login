@@ -3,7 +3,7 @@
 
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 
@@ -11,7 +11,6 @@
 require("db.php");
 $login_message = "";
 $login_error = "";
-session_start();
 
 if (isset($_POST["login"])) {
     $email = $_POST["email"];
@@ -23,24 +22,24 @@ if (isset($_POST["login"])) {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $login_error = "Invalid email format";
     } else {
-
-        $conn = connect_db();
-
-        $sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $sql = "SELECT * FROM users WHERE email = '$email' LIMIT 1";
+        // $stmt = $conn->prepare($sql);
+        // $stmt->bind_param("s", $email);
+        // $stmt->execute();
+        // $result = $stmt->get_result();
+        $result = mysqli_query($dbconnect, $sql);
         $row = $result->fetch_assoc();
 
         if (!empty($row)) {
-            if ($row["userPassword"] != crypt($password, $crypt_key)) {
+            if ($row["user_password"] != crypt($password, $crypt_key)) {
                 $login_error = "Invalid email or password";
             } else {
                 $login_message = "Login successful";
                 $_SESSION["firstname"] = $row["firstname"];
                 $_SESSION["othernames"] = $row["othernames"];
-                header("Location: welcome.php");
+                $_SESSION["user_id"] = $row["id"];
+
+                header("Location: index.php");
             }
         } else {
             $login_error = "User does not exist";
@@ -50,14 +49,13 @@ if (isset($_POST["login"])) {
 ?>
 
 <body>
-    <a href="/" id="back" class="startButton">Back</a>
     <section class="regForm">
-        <form class="formBox" method="POST">
+        <form method="POST">
 
-            <div class="shape formShape"></div>
-            <div class="shape formShape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
 
-            <input type="hidden" name="login" value="asas" />
+            <input type="hidden" name="login" value="" />
             <h3>Login Here</h3>
             <?php
 

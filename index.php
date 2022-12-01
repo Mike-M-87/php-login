@@ -1,29 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Home</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-
-
 <?php
-session_start();
-if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: index.php");
-}
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 ?>
 
-<body>
-    <div class="shape"></div>
-    <div class="shape"></div>
+<?php require("header.php") ?>
 
-    <h1 style="text-align: center; color:white;">Hello</h1>
-    <div style="display: flex; justify-content:space-around">
-        <a href="/login.php" class="startButton">Login</a>
-        <a href="/register.php" class="startButton">Register</a>
-    </div>
-</body>
 
-</html>
+<?php require("footer.php") ?>
+
+

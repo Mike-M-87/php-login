@@ -3,12 +3,12 @@
 
 <head>
     <title>Register</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <?php
 require("db.php");
 $signup_error = "";
-session_start();
+
 
 if (isset($_POST["signup"])) {
     $email = htmlspecialchars($_POST["email"]);
@@ -28,9 +28,8 @@ if (isset($_POST["signup"])) {
     }
 
     if (empty($signup_error)) {
-        $conn = connect_db();
         $sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
-        $stmt = $conn->prepare($sql);
+        $stmt = $dbconnect->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -39,17 +38,15 @@ if (isset($_POST["signup"])) {
         if (!empty($row)) {
             $signup_error = "User already exists";
         } else {
-            $sql = "INSERT INTO users (email, firstname, othernames, contact, userPassword) VALUES (?,?,?,?,?)";
-            $stmt = $conn->prepare($sql);
+            $sql = "INSERT INTO users (email, firstname, othernames, contact, user_password) VALUES (?,?,?,?,?)";
+            $stmt = $dbconnect->prepare($sql);
             // So what the 'ss' stands for is just a representation of the type of the input params
             $password = crypt($password, $crypt_key);
             $stmt->bind_param("sssss", $email, $firstname, $othernames, $contact, $password);
             $result = $stmt->execute();
             if ($result) {
-                $_SESSION["firstname"] = $firstname;
-                $_SESSION["othernames"] = $othernames;
                 $signup_message = "Registration Successful";
-                header("Location: welcome.php");
+                header("Location: login.php");
             }
         }
     }
@@ -57,16 +54,13 @@ if (isset($_POST["signup"])) {
 ?>
 
 <body>
-    <a href="/" id="back" class="startButton">Back</a>
-
     <section class="regForm">
-        <form class="formBox" method="POST">
+        <form method="POST">
             <div class="shape"></div>
             <div class="shape"></div>
 
             <h3>Register Here</h3>
             <?php
-
             if (!empty($signup_error)) {
                 echo "<div class=\"errorbox\">{$signup_error}</div>";
             }
