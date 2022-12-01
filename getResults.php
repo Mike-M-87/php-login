@@ -20,6 +20,7 @@ foreach ($elections as $election) {
         $positionId = $position["id"];
         $positionName = $position["name"];
 ?>
+
         <div>
             <div class="breadcome-area">
                 <div class="container-fluid">
@@ -52,7 +53,6 @@ foreach ($elections as $election) {
             </div>
 
 
-            <!-- Candidates Area -->
 
             <div class="product-new-list-area">
                 <div class="container-fluid">
@@ -112,4 +112,3 @@ foreach ($elections as $election) {
 <?php }
 }
 ?>
-
